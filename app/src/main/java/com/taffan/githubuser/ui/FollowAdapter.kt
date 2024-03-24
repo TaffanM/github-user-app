@@ -1,5 +1,6 @@
 package com.taffan.githubuser.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -7,13 +8,20 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.taffan.githubuser.data.response.ItemsItem
-import com.taffan.githubuser.databinding.UserItemRowBinding
+import com.taffan.githubuser.databinding.FollowItemRowBinding
 
-class UserAdapter : ListAdapter<ItemsItem, UserAdapter.MyViewHolder>(DIFF_CALLBACK) {
+class FollowAdapter : ListAdapter<ItemsItem, FollowAdapter.MyViewHolder>(DIFF_CALLBACK) {
     private lateinit var onItemClickCallback: OnItemClickCallback
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val binding = UserItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = FollowItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
+    }
+
+    override fun getItemCount(): Int {
+        val itemCount = super.getItemCount()
+        Log.d("FollowAdapter", "ItemCount : $itemCount")
+        return itemCount
     }
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
@@ -22,7 +30,7 @@ class UserAdapter : ListAdapter<ItemsItem, UserAdapter.MyViewHolder>(DIFF_CALLBA
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val user = getItem(position)
-         holder.bind(user)
+        holder.bind(user)
 
         holder.itemView.setOnClickListener {
             onItemClickCallback.onItemClicked(user)
@@ -33,14 +41,13 @@ class UserAdapter : ListAdapter<ItemsItem, UserAdapter.MyViewHolder>(DIFF_CALLBA
         fun onItemClicked(item: ItemsItem)
     }
 
-    class MyViewHolder(val binding: UserItemRowBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MyViewHolder(val binding: FollowItemRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ItemsItem) {
-            binding.tvItemName.text = item.login
+            binding.tvFollowName.text = item.login
             Glide.with(binding.root.context)
                 .load(item.avatarUrl)
                 .circleCrop()
-                .into(binding.imgItemPhoto)
-
+                .into(binding.imgFollowPhoto)
         }
     }
 
@@ -53,9 +60,6 @@ class UserAdapter : ListAdapter<ItemsItem, UserAdapter.MyViewHolder>(DIFF_CALLBA
             override fun areContentsTheSame(oldItem: ItemsItem, newItem: ItemsItem): Boolean {
                 return oldItem == newItem
             }
-
         }
-
     }
-
 }

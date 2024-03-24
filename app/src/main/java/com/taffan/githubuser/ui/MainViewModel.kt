@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.Glide.init
 import com.taffan.githubuser.data.response.GithubResponse
 import com.taffan.githubuser.data.response.ItemsItem
 import com.taffan.githubuser.data.retrofit.ApiConfig
@@ -20,7 +19,7 @@ class MainViewModel: ViewModel() {
     val listItems: LiveData<List<ItemsItem>> = _listItems
 
     init {
-        findUserGitHub("github")
+        findUserGitHub("Taffan")
     }
 
     fun findUserGitHub(searchText: String) {

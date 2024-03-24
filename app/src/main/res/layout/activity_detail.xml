@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".ui.DetailActivity">
 
+
+
+
     <ImageView
         android:id="@+id/img_detail_photo"
         android:layout_width="120dp"
@@ -37,6 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="@string/username"
+        android:textStyle="italic"
         android:textSize="18sp"
         android:gravity="center"
         android:layout_marginTop="8dp"
@@ -68,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="32dp"
-            android:text="@string/number_zero"
+            tools:text="@string/number_zero"
             />
 
         <TextView
@@ -83,10 +87,44 @@
             android:id="@+id/following_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/number_zero"
+            tools:text="@string/number_zero"
             />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tabs_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_linear"
+        android:layout_marginTop="8dp">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabSelectedTextColor="@color/grey_app"
+            app:tabTextColor="@color/primaryColor"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     

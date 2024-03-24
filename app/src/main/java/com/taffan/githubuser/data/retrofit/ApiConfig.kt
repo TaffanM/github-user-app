@@ -13,8 +13,6 @@ const val API_KEY = BuildConfig.API_KEY
 class ApiConfig {
     companion object {
         fun getApiService() : ApiService {
-//            val loggingInterceptor =
-//                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             val authInterceptor = Interceptor {chain ->
                 val req = chain.request()
                 val requestHeaders = req.newBuilder()
