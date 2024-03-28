@@ -1,11 +1,13 @@
 package com.taffan.githubuser.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -14,12 +16,11 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.taffan.githubuser.R
 import com.taffan.githubuser.databinding.ActivityDetailBinding
+import com.taffan.githubuser.ui.adapter.SectionsPagerAdapter
+import com.taffan.githubuser.ui.model.DetailViewModel
+import com.taffan.githubuser.ui.model.ViewModelFactory
 
 class DetailActivity : AppCompatActivity() {
-    private lateinit var imgDetail: ImageView
-    private lateinit var detailUsername: TextView
-    private lateinit var detailName: TextView
-    private lateinit var binding: ActivityDetailBinding
     companion object {
         @StringRes
         private val TAB_TITLES = intArrayOf(
@@ -27,6 +28,15 @@ class DetailActivity : AppCompatActivity() {
             R.string.tab_text_2
         )
     }
+    private lateinit var imgDetail: ImageView
+    private lateinit var detailUsername: TextView
+    private lateinit var detailName: TextView
+    private lateinit var binding: ActivityDetailBinding
+
+    private val detailViewModel by viewModels<DetailViewModel>() {
+        ViewModelFactory.getInstance(application)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
@@ -48,7 +58,7 @@ class DetailActivity : AppCompatActivity() {
         detailUsername.text = login
 
 
-        val detailViewModel = ViewModelProvider(this)[DetailViewModel::class.java]
+//        val detailViewModel = obtainDetailViewModel(this@DetailActivity)
         detailViewModel.followers.observe(this) { followers ->
             binding.followersNumber.text  = followers?.toString() ?: "0"
         }
@@ -65,10 +75,20 @@ class DetailActivity : AppCompatActivity() {
             showLoading(it)
         }
 
+        detailViewModel.htmlUrl.observe(this) {htmlUrl ->
+            binding.btnShare.setOnClickListener {
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, htmlUrl)
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
+            }
+        }
+
         detailViewModel.findDetailedInfo(login!!)
-
-
-
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this, login ?: "")
         val viewPager: ViewPager2 = findViewById(R.id.view_pager)
@@ -104,4 +124,5 @@ class DetailActivity : AppCompatActivity() {
         dispatcher.addCallback(this, onBackPressedCallback)
 
     }
+
 }

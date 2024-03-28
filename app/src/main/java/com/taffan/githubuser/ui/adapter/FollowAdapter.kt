@@ -1,4 +1,4 @@
-package com.taffan.githubuser.ui
+package com.taffan.githubuser.ui.adapter
 
 import android.util.Log
 import android.view.LayoutInflater

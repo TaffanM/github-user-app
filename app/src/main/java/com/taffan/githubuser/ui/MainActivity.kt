@@ -6,16 +6,24 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.taffan.githubuser.data.response.ItemsItem
 import com.taffan.githubuser.databinding.ActivityMainBinding
+import com.taffan.githubuser.ui.adapter.UserAdapter
+import com.taffan.githubuser.ui.model.DetailViewModel
+import com.taffan.githubuser.ui.model.MainViewModel
+import com.taffan.githubuser.ui.model.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var detailViewModel: DetailViewModel
     private lateinit var userAdapter: UserAdapter
+
+    private val detailViewModel by viewModels<DetailViewModel>() {
+        ViewModelFactory.getInstance(application)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        detailViewModel = ViewModelProvider(this)[DetailViewModel::class.java]
 
         userAdapter = UserAdapter()
         userAdapter.setOnItemClickCallback(object : UserAdapter.OnItemClickCallback {
@@ -34,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        val mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        val mainViewModel = obtainMainViewModel(this@MainActivity)
         mainViewModel.listItems.observe(this) { listItems ->
             setUserData(listItems)
         }
@@ -97,6 +104,16 @@ class MainActivity : AppCompatActivity() {
 
         dispatcher.addCallback(this, onBackPressedCallback)
 
+    }
+
+    private fun obtainDetailViewModel(activity: AppCompatActivity): DetailViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory)[DetailViewModel::class.java]
+    }
+
+    private fun obtainMainViewModel(activity: AppCompatActivity): MainViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory)[MainViewModel::class.java]
     }
 
 }

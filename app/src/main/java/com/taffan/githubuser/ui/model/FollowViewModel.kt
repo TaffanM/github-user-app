@@ -1,5 +1,6 @@
-package com.taffan.githubuser.ui
+package com.taffan.githubuser.ui.model
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +11,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FollowViewModel: ViewModel() {
+class FollowViewModel(application: Application): ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 

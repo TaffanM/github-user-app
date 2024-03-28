@@ -16,6 +16,9 @@ data class DetailUserResponse(
 	@field:SerializedName("avatar_url")
 	val avatarUrl: String? = null,
 
+	@field:SerializedName("html_url")
+	val htmlUrl: String? = null,
+
 	@field:SerializedName("following")
 	val following: Int? = null,
 

@@ -9,6 +9,13 @@
 
     <style name="Theme.GithubUser" parent="Base.Theme.GithubUser" />
 
+    <style name="Theme.App.GithubUser" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_user_png</item>
+        <item name="postSplashScreenTheme">@style/Theme.GithubUser</item>
+    </style>
+
+
+
     <style name="user_row" parent="Base.Theme.GithubUser">
         <item name="android:background">@color/white</item>
     </style>

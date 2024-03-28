@@ -1,16 +1,22 @@
-package com.taffan.githubuser.ui
+package com.taffan.githubuser.ui.model
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.taffan.githubuser.data.response.DetailUserResponse
 import com.taffan.githubuser.data.retrofit.ApiConfig
+import com.taffan.githubuser.database.FavoriteUser
+import com.taffan.githubuser.repository.FavoriteUserRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel: ViewModel() {
+class DetailViewModel(application: Application): ViewModel() {
+    private val mFavoriteUserRepository: FavoriteUserRepository = FavoriteUserRepository(application)
+
+    fun getAllUser(): LiveData<List<FavoriteUser>> = mFavoriteUserRepository.getAllUser()
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -20,6 +26,9 @@ class DetailViewModel: ViewModel() {
 
     private val _following = MutableLiveData<Int>()
     val following: LiveData<Int> = _following
+
+    private val _htmlUrl = MutableLiveData<String>()
+    val htmlUrl: LiveData<String> = _htmlUrl
 
     private val _name = MutableLiveData<String>()
     val name: LiveData<String> = _name
@@ -42,6 +51,8 @@ class DetailViewModel: ViewModel() {
                     _following.value = following
                     val name = userResponse?.name
                     _name.value = name
+                    val htmlUrl = userResponse?.htmlUrl
+                    _htmlUrl.value = htmlUrl
 
                 } else {
                     Log.e("responseError", "onFailureResponseDetail: ${response.message()}")

@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.taffan.githubuser.data.response.ItemsItem
 import com.taffan.githubuser.databinding.FragmentFollowBinding
+import com.taffan.githubuser.ui.adapter.FollowAdapter
+import com.taffan.githubuser.ui.model.FollowViewModel
+import com.taffan.githubuser.ui.model.ViewModelFactory
 
 
 /**
@@ -21,10 +24,14 @@ import com.taffan.githubuser.databinding.FragmentFollowBinding
 class FollowFragment : Fragment() {
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: FollowViewModel by viewModels()
+//    private val viewModel: FollowViewModel by viewModels()
     private lateinit var followAdapter: FollowAdapter
     private var position: Int? = null
     private var username: String? = null
+
+    private val followViewModel by viewModels<FollowViewModel> {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,11 +65,11 @@ class FollowFragment : Fragment() {
             position = it.getInt(ARG_POSITION)
         }
         if (position == 1) {
-            viewModel.isLoading.observe(viewLifecycleOwner) {
+            followViewModel.isLoading.observe(viewLifecycleOwner) {
                 showLoading(it)
             }
-            viewModel.findFollowerUser(username = username ?: "")
-            viewModel.followerList.observe(viewLifecycleOwner) { followerList ->
+            followViewModel.findFollowerUser(username = username ?: "")
+            followViewModel.followerList.observe(viewLifecycleOwner) { followerList ->
                 followAdapter.submitList(followerList)
             }
             followAdapter.setOnItemClickCallback(object : FollowAdapter.OnItemClickCallback {
@@ -72,11 +79,11 @@ class FollowFragment : Fragment() {
 
             })
         } else {
-            viewModel.isLoading.observe(viewLifecycleOwner) {
+            followViewModel.isLoading.observe(viewLifecycleOwner) {
                 showLoading(it)
             }
-            viewModel.findFollowingUser(username = username ?: "")
-            viewModel.followingList.observe(viewLifecycleOwner) { followingList ->
+            followViewModel.findFollowingUser(username = username ?: "")
+            followViewModel.followingList.observe(viewLifecycleOwner) { followingList ->
                 followAdapter.submitList(followingList)
             }
             followAdapter.setOnItemClickCallback(object : FollowAdapter.OnItemClickCallback {
