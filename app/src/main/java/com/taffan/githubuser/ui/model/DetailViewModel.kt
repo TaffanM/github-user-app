@@ -1,22 +1,17 @@
 package com.taffan.githubuser.ui.model
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.taffan.githubuser.data.response.DetailUserResponse
 import com.taffan.githubuser.data.retrofit.ApiConfig
-import com.taffan.githubuser.database.FavoriteUser
-import com.taffan.githubuser.repository.FavoriteUserRepository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel(application: Application): ViewModel() {
-    private val mFavoriteUserRepository: FavoriteUserRepository = FavoriteUserRepository(application)
+class DetailViewModel: ViewModel() {
 
-    fun getAllUser(): LiveData<List<FavoriteUser>> = mFavoriteUserRepository.getAllUser()
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading

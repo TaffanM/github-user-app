@@ -1,27 +1,37 @@
 package com.taffan.githubuser.ui
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.taffan.githubuser.R
 import com.taffan.githubuser.data.response.ItemsItem
 import com.taffan.githubuser.databinding.ActivityMainBinding
+import com.taffan.githubuser.preferences.SettingPreferences
+import com.taffan.githubuser.preferences.dataStore
+import com.taffan.githubuser.repository.FavoriteUserRepository
 import com.taffan.githubuser.ui.adapter.UserAdapter
 import com.taffan.githubuser.ui.model.DetailViewModel
 import com.taffan.githubuser.ui.model.MainViewModel
 import com.taffan.githubuser.ui.model.ViewModelFactory
+import com.taffan.githubuser.utils.AppExecutors
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var userAdapter: UserAdapter
+    private lateinit var detailViewModel: DetailViewModel
+    private lateinit var favoriteUserRepository: FavoriteUserRepository
 
-    private val detailViewModel by viewModels<DetailViewModel>() {
-        ViewModelFactory.getInstance(application)
+
+    private val mainViewModel by viewModels<MainViewModel>() {
+        ViewModelFactory.getInstance(getSettingPreferences(this), favoriteUserRepository)
     }
 
 
@@ -30,9 +40,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.hide()
+        detailViewModel = DetailViewModel()
 
-
+        favoriteUserRepository = FavoriteUserRepository.getInstance(application, AppExecutors())
         userAdapter = UserAdapter()
         userAdapter.setOnItemClickCallback(object : UserAdapter.OnItemClickCallback {
             override fun onItemClicked(item: ItemsItem) {
@@ -41,7 +51,16 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        val mainViewModel = obtainMainViewModel(this@MainActivity)
+        findViewById<View>(R.id.favorite).setOnClickListener {
+            val intent = Intent(this, FavoriteUserActivity::class.java)
+            startActivity(intent)
+        }
+
+        findViewById<View>(R.id.settings).setOnClickListener {
+            val intent = Intent(this, DarkModeActivity::class.java)
+            startActivity(intent)
+        }
+
         mainViewModel.listItems.observe(this) { listItems ->
             setUserData(listItems)
         }
@@ -67,8 +86,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        mainViewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+
         onBackPressedCallback()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_searchbar, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     private fun setUserData(user: List<ItemsItem>) {
@@ -92,6 +124,10 @@ class MainActivity : AppCompatActivity() {
         startActivity(intentDetail)
     }
 
+    private fun getSettingPreferences(context: Context): SettingPreferences {
+        return SettingPreferences.getInstance(context.dataStore)
+    }
+
 
     private fun onBackPressedCallback() {
         val dispatcher = onBackPressedDispatcher
@@ -104,16 +140,6 @@ class MainActivity : AppCompatActivity() {
 
         dispatcher.addCallback(this, onBackPressedCallback)
 
-    }
-
-    private fun obtainDetailViewModel(activity: AppCompatActivity): DetailViewModel {
-        val factory = ViewModelFactory.getInstance(activity.application)
-        return ViewModelProvider(activity, factory)[DetailViewModel::class.java]
-    }
-
-    private fun obtainMainViewModel(activity: AppCompatActivity): MainViewModel {
-        val factory = ViewModelFactory.getInstance(activity.application)
-        return ViewModelProvider(activity, factory)[MainViewModel::class.java]
     }
 
 }

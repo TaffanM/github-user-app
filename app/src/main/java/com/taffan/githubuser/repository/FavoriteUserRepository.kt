@@ -5,12 +5,24 @@ import androidx.lifecycle.LiveData
 import com.taffan.githubuser.database.FavoriteDao
 import com.taffan.githubuser.database.FavoriteRoomDatabase
 import com.taffan.githubuser.database.FavoriteUser
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import com.taffan.githubuser.utils.AppExecutors
 
-class FavoriteUserRepository(application: Application) {
+class FavoriteUserRepository private constructor(application: Application, private val appExecutors: AppExecutors) {
     private val favoriteUserDao: FavoriteDao
-    private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
+
+    companion object {
+        @Volatile
+        private var INSTANCE: FavoriteUserRepository? = null
+
+        fun getInstance(application: Application, appExecutors: AppExecutors): FavoriteUserRepository {
+            return INSTANCE ?: synchronized(this) {
+                val instance = FavoriteUserRepository(application, appExecutors)
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+
 
     init {
         val db = FavoriteRoomDatabase.getDatabase(application)
@@ -19,15 +31,23 @@ class FavoriteUserRepository(application: Application) {
 
     fun getAllUser(): LiveData<List<FavoriteUser>> = favoriteUserDao.getAllUser()
 
+    fun setFavoriteUsers(user: FavoriteUser, favoriteState: Boolean) {
+        appExecutors.diskIO.execute{
+            user.isFavorited = favoriteState
+            favoriteUserDao.update(user)
+        }
+    }
+
     fun insert(favoriteUser: FavoriteUser) {
-        executorService.execute { favoriteUserDao.insert(favoriteUser)}
+        appExecutors.diskIO.execute { favoriteUserDao.insert(favoriteUser)}
     }
 
     fun delete(favoriteUser: FavoriteUser) {
-        executorService.execute { favoriteUserDao.delete(favoriteUser)}
+        appExecutors.diskIO.execute { favoriteUserDao.delete(favoriteUser)}
     }
 
-    fun update(favoriteUser: FavoriteUser) {
-        executorService.execute { favoriteUserDao.update(favoriteUser)}
-    }
+
+
+
+
 }

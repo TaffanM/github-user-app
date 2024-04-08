@@ -13,25 +13,16 @@ import com.taffan.githubuser.data.response.ItemsItem
 import com.taffan.githubuser.databinding.FragmentFollowBinding
 import com.taffan.githubuser.ui.adapter.FollowAdapter
 import com.taffan.githubuser.ui.model.FollowViewModel
-import com.taffan.githubuser.ui.model.ViewModelFactory
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FollowerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FollowFragment : Fragment() {
-    private var _binding: FragmentFollowBinding? = null
-    private val binding get() = _binding!!
-//    private val viewModel: FollowViewModel by viewModels()
+    private lateinit var binding: FragmentFollowBinding
+//    private val binding get() = _binding!!
+    private val followViewModel: FollowViewModel by viewModels()
     private lateinit var followAdapter: FollowAdapter
     private var position: Int? = null
     private var username: String? = null
 
-    private val followViewModel by viewModels<FollowViewModel> {
-        ViewModelFactory.getInstance(requireActivity().application)
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,14 +37,7 @@ class FollowFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentFollowBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentFollowBinding.inflate(inflater, container, false)
         followAdapter = FollowAdapter()
         binding.rvFollow.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -61,6 +45,7 @@ class FollowFragment : Fragment() {
         }
         val itemDecoration = DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         binding.rvFollow.addItemDecoration(itemDecoration)
+
         arguments?.let {
             position = it.getInt(ARG_POSITION)
         }
@@ -93,8 +78,7 @@ class FollowFragment : Fragment() {
 
             })
         }
-
-
+        return binding.root
     }
 
     private fun showLoading(isLoading: Boolean) {

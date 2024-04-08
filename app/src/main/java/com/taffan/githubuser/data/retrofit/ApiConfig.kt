@@ -4,7 +4,6 @@ import android.util.Log
 import com.taffan.githubuser.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -29,13 +28,10 @@ class ApiConfig {
                 val rateLimitRemaining = response.header("X-RateLimit-Remaining")
                 val rateLimitReset = response.header("X-RateLimit-Reset")
 
-                // Handle rate limit headers, e.g., log or display to the user
                 if (rateLimitRemaining != null && rateLimitReset != null && rateLimitMax != null) {
                     val maxRequest = rateLimitMax.toInt()
                     val remainingRequests = rateLimitRemaining.toInt()
                     val resetTime = rateLimitReset.toLong()
-                    // Display or log rate limit information
-                    // For example:
                     Log.d("RateLimit", "Remaining requests: $remainingRequests, Reset time: $resetTime, Max : $maxRequest" )
                 }
 

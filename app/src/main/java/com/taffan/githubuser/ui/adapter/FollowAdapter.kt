@@ -1,6 +1,5 @@
 package com.taffan.githubuser.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -16,12 +15,6 @@ class FollowAdapter : ListAdapter<ItemsItem, FollowAdapter.MyViewHolder>(DIFF_CA
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = FollowItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
-    }
-
-    override fun getItemCount(): Int {
-        val itemCount = super.getItemCount()
-        Log.d("FollowAdapter", "ItemCount : $itemCount")
-        return itemCount
     }
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {

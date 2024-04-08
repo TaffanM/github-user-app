@@ -19,6 +19,6 @@ interface FavoriteDao {
     @Delete
     fun delete(favoriteUser: FavoriteUser)
 
-    @Query("SELECT * from favoriteuser ORDER BY username ASC")
+    @Query("SELECT * from favorite_user ORDER BY username ASC")
     fun getAllUser(): LiveData<List<FavoriteUser>>
 }

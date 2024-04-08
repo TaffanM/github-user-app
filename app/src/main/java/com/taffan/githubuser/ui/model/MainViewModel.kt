@@ -1,18 +1,21 @@
 package com.taffan.githubuser.ui.model
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.taffan.githubuser.data.response.GithubResponse
 import com.taffan.githubuser.data.response.ItemsItem
 import com.taffan.githubuser.data.retrofit.ApiConfig
+import com.taffan.githubuser.preferences.SettingPreferences
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel(application: Application): ViewModel() {
+class MainViewModel(private val pref: SettingPreferences): ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -50,4 +53,15 @@ class MainViewModel(application: Application): ViewModel() {
         })
 
     }
+
+    fun getThemeSettings(): LiveData<Boolean> {
+        return pref.getThemeSetting().asLiveData()
+    }
+
+    fun saveThemeSetting(isDarkModeActive: Boolean) {
+        viewModelScope.launch {
+            pref.saveThemeSetting(isDarkModeActive)
+        }
+    }
+
 }

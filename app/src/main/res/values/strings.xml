@@ -7,4 +7,10 @@
     <string name="number_zero">0</string>
     <string name="tab_text_1">Followers</string>
     <string name="tab_text_2">Following</string>
+    <string name="fav_title">Favorite User</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="detail_photo">detail user\'s photo</string>
+    <string name="btn_fav">favorite button\n</string>
+    <string name="btn_share">button share</string>
+    <string name="image_item">image item\n</string>
 </resources>
